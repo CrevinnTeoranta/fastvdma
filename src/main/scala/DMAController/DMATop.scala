@@ -33,17 +33,17 @@ import chisel3.util.Queue
 class DMATop extends Module{
   val io = IO(new Bundle{
     val control = Flipped(new AXI4Lite(DMATop.controlAddrWidth, DMATop.controlDataWidth))
-    val read = Flipped(new AXIStream(DMATop.readDataWidth))
-    val write = new AXI4(DMATop.addrWidth, DMATop.writeDataWidth)
+    val read = new AXI4(DMATop.addrWidth, DMATop.readDataWidth)
+    val write = new AXIStream(DMATop.writeDataWidth)
     val irq = new InterruptBundle
     val sync = new SyncBundle
   })
 
   val csrFrontend = Module(new AXI4LiteCSR(DMATop.addrWidth))
 
-  val readerFrontend = Module(new AXIStreamSlave(DMATop.addrWidth, DMATop.readDataWidth))
+  val readerFrontend = Module(new AXI4Reader(DMATop.addrWidth, DMATop.readDataWidth))
 
-  val writerFrontend = Module(new AXI4Writer(DMATop.addrWidth, DMATop.writeDataWidth))
+  val writerFrontend = Module(new AXIStreamMaster(DMATop.addrWidth, DMATop.writeDataWidth))
 
   val csr = Module(new CSR(DMATop.addrWidth))
 
